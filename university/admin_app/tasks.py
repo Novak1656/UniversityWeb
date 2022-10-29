@@ -1,9 +1,6 @@
-import io
 import xlsxwriter
 from celery import shared_task
-from django.http import HttpResponse
-from rest_framework.response import Response
-
+from django.utils.timezone import now
 from .models import StudyDirection
 from curator_app.models import StudyGroup
 from django.db.models import When, Count, IntegerField, Case, Sum
@@ -15,8 +12,7 @@ def generate_report():
         sex_dict = {'Man': 'Мужчина', 'Woman': 'Женщина'}
         return sex_dict.get(sex_value)
 
-    output = io.BytesIO()
-    workbook = xlsxwriter.Workbook(output, options={'in_memory': True})
+    workbook = xlsxwriter.Workbook(filename=f'UniversityReport{now().date()}.xlsx', options={'in_memory': True})
 
     # Columns formats
     merge_format = workbook.add_format({'align': 'center'})
@@ -87,12 +83,4 @@ def generate_report():
             groups_sheet.write(i, col, value, cell_format)
 
     workbook.close()
-
-    output.seek(0)
-    response = Response(HttpResponse(
-        output.read(),
-        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    ))
-    print(response)
-    response['Content-Disposition'] = "attachment; filename=UniversityReport.xlsx"
-    return response
+    return workbook.filename
