@@ -12,7 +12,7 @@ class StudyDirection(models.Model):
         on_delete=models.PROTECT,
         related_name='direction'
     )
-    direction = models.ManyToManyField(
+    disciplines = models.ManyToManyField(
         verbose_name='Дисциплины',
         to='StudyDiscipline',
         related_name='directions'

@@ -1,19 +1,14 @@
-from django.urls import path
-from .views import StudyDisciplineViewSet, StudyDirectionViewSet, CuratorViewSet
+from django.urls import path, include
+from .views import StudyDisciplineViewSet, StudyDirectionViewSet, CuratorViewSet, start_generate_report
+from rest_framework import routers
+
+
+router = routers.SimpleRouter()
+router.register(r'disciplines', StudyDisciplineViewSet)
+router.register(r'curators', CuratorViewSet)
+router.register(r'directions', StudyDirectionViewSet)
 
 urlpatterns = [
-    path('disciplines/', StudyDisciplineViewSet.as_view(actions={'get': 'list', 'post': 'create'})),
-    path('disciplines/<int:pk>/',
-         StudyDisciplineViewSet.as_view(actions={'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})
-         ),
-
-    path('curators/', CuratorViewSet.as_view(actions={'get': 'list', 'post': 'create'})),
-    path('curators/<int:pk>/',
-         CuratorViewSet.as_view(actions={'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})
-         ),
-
-    path('directions/', StudyDirectionViewSet.as_view(actions={'get': 'list', 'post': 'create'})),
-    path('directions/<int:pk>/',
-         StudyDirectionViewSet.as_view(actions={'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})
-         ),
+    path('', include(router.urls)),
+    path('generate_report/', start_generate_report)
 ]

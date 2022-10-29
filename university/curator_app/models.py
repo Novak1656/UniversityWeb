@@ -62,7 +62,7 @@ class StudyGroup(models.Model):
     class Meta:
         verbose_name = 'Учебная группа'
         verbose_name_plural = 'Учебные группы'
-        ordering = ['-title']
+        ordering = ['title']
 
     def __str__(self):
         return f'{self.title}'
@@ -109,4 +109,4 @@ class Student(models.Model):
         return f'{self.first_name} {self.second_name} {self.last_name}'
 
     def __str__(self):
-        return f'{self.get_full_name}: {self.group}'
+        return f'{self.get_full_name()}'
