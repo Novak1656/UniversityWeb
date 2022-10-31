@@ -50,10 +50,17 @@ def show_generate_report_status(request, task_id):
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def get_report(request, task_id):
-    task_result = TaskResult.objects.filter(task_id=task_id, status='SUCCESS').first().result
-    filename = task_result.replace('"', '')
-    with open(os.path.join(settings.BASE_DIR, filename), 'rb') as file:
-        report = file.read()
-    response = HttpResponse(report, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = "attachment; filename=UniversityReport.xlsx"
-    return response
+    task_result = TaskResult.objects.filter(task_id=task_id, status='SUCCESS')
+    if task_result.exists():
+        result = task_result.first().result
+        filename = result.replace('"', '')
+        with open(os.path.join(settings.BASE_DIR, filename), 'rb') as file:
+            report = file.read()
+        response = HttpResponse(
+            report,
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = "attachment; filename=UniversityReport.xlsx"
+        return response
+    cur_status = AsyncResult(task_id).state
+    return Response({'message': 'The report has not been generated yet.', 'generation_status': cur_status})
