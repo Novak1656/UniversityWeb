@@ -8,7 +8,7 @@ from django.db.models import When, Count, IntegerField, Case, Sum
 
 @shared_task
 def generate_report():
-    def translate_sex(sex_value):
+    def translate_sex_arg(sex_value: str) -> str:
         sex_dict = {'Man': 'Мужчина', 'Woman': 'Женщина'}
         return sex_dict.get(sex_value)
 
@@ -43,7 +43,7 @@ def generate_report():
     for i, direction in enumerate(directions_data, start=2):
         disciplines = '\n'.join(f'{num}. {obj.title}' for num, obj in enumerate(direction.disciplines.all(), start=1))
         curator = direction.curator
-        row_data = [direction.title, disciplines, curator.get_full_name(), translate_sex(curator.sex), curator.old]
+        row_data = [direction.title, disciplines, curator.get_full_name(), translate_sex_arg(curator.sex), curator.old]
         for col, value in enumerate(row_data):
             directions_sheet.write(i, col, value, cell_format)
 

@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from decouple import config
 
@@ -95,9 +94,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CELERY_TIMEZONE = "Europe/Moscow"
@@ -109,3 +105,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'django-db'
 
 CELERY_BROKER_URL = "redis://redis:6379"
+
+REST_FRAMEWORK = {
+   'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser', ),
+}
